@@ -1,0 +1,75 @@
+from tkinter import Tk, BOTH, Canvas
+
+class Point():
+    def __init__(self, x = 0, y = 0):
+        self.x = x
+        self.y = y
+
+class Line():
+    def __init__(self,p1: Point, p2: Point):
+        self.p1 = p1
+        self.p2 = p2
+    
+    def draw(self, cnv: Canvas, fill_color: str):
+        cnv.create_line(self.p1.x,self.p1.y,self.p2.x,self.p2.y, fill=fill_color, width=2)
+
+
+class Window():
+    def __init__(self, width: int = 400, height: int = 400):
+        self.__root = Tk()
+        self.__root.title("Test TKinter")
+
+        self.__canvas = Canvas(self.__root, bg="white", height=height, width=width)
+        self.__canvas.pack(fill=BOTH, expand=1)
+
+        self.__runningFlag = False
+        self.__root.protocol("WM_DELETE_WINDOW", self.close)
+
+    def redraw(self):
+        self.__root.update_idletasks()
+        self.__root.update()
+    
+    def wait_for_close(self):
+        self.__runningFlag = True
+        while self.__runningFlag:
+            self.redraw()
+        print("window closed")
+    
+    def close(self):
+        self.__runningFlag = False
+    
+    def draw_line(self, l: Line, fill_color: str):
+        l.draw(self.__canvas,fill_color)
+
+
+class Cell():
+    def __init__(self, top_left_point: Point,bottom_right_point: Point, window: Window,
+                 l_wall = True, r_wall = True, t_wall = True, b_wall = True):
+        self.__x1 = top_left_point.x
+        self.__y1 = top_left_point.y
+        self.__x2 = bottom_right_point.x
+        self.__y2 = bottom_right_point.y
+        self.__win = window
+        self.has_left_wall = l_wall
+        self.has_right_wall = r_wall
+        self.has_top_wall = t_wall
+        self.has_bottom_wall = b_wall
+    
+    def draw(self):
+        tl_p = Point(self.__x1,self.__y1)
+        tr_p = Point(self.__x2,self.__y1)
+        bl_p = Point(self.__x1,self.__y2)
+        br_p = Point(self.__x2,self.__y2)
+
+        if self.has_left_wall:
+            l = Line(tl_p,bl_p)
+            self.__win.draw_line(l,"black")
+        if self.has_right_wall:
+            l = Line(tr_p,br_p)
+            self.__win.draw_line(l,"black")
+        if self.has_top_wall:
+            l = Line(tl_p,tr_p)
+            self.__win.draw_line(l,"black")
+        if self.has_bottom_wall:
+            l = Line(bl_p,br_p)
+            self.__win.draw_line(l,"black")
