@@ -43,7 +43,7 @@ class Window():
 
 
 class Cell():
-    def __init__(self, top_left_point: Point,bottom_right_point: Point, window: Window,
+    def __init__(self, top_left_point: Point,bottom_right_point: Point, window: Window = None,
                  l_wall = True, r_wall = True, t_wall = True, b_wall = True):
         self.__x1 = top_left_point.x
         self.__y1 = top_left_point.y
@@ -82,6 +82,6 @@ class Cell():
         if undo:
             color = "grey"
 
-
-        self.__win.draw_line(Line(self_center,c_center),color)
+        if self.__win is not None:
+            self.__win.draw_line(Line(self_center,c_center),color)
 
