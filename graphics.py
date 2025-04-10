@@ -54,25 +54,43 @@ class Cell():
         self.has_right_wall = r_wall
         self.has_top_wall = t_wall
         self.has_bottom_wall = b_wall
+        self.visited = False
     
     def draw(self):
+        if self.__win is None:
+            return
         tl_p = Point(self.__x1,self.__y1)
         tr_p = Point(self.__x2,self.__y1)
         bl_p = Point(self.__x1,self.__y2)
         br_p = Point(self.__x2,self.__y2)
 
+        # Left Wall
+        l = Line(tl_p,bl_p)
+        cl = "white"
         if self.has_left_wall:
-            l = Line(tl_p,bl_p)
-            self.__win.draw_line(l,"black")
+            cl = "black"
+        self.__win.draw_line(l,cl)
+
+        # Right Wall
+        l = Line(tr_p,br_p)
+        cl = "white"
         if self.has_right_wall:
-            l = Line(tr_p,br_p)
-            self.__win.draw_line(l,"black")
+            cl = "black"
+        self.__win.draw_line(l,cl)
+
+        # Top wall
+        l = Line(tl_p,tr_p)
+        cl = "white"
         if self.has_top_wall:
-            l = Line(tl_p,tr_p)
-            self.__win.draw_line(l,"black")
+            cl = "black"
+        self.__win.draw_line(l,cl)
+
+        # Bottom Wall
+        l = Line(bl_p,br_p)
+        cl = "white"
         if self.has_bottom_wall:
-            l = Line(bl_p,br_p)
-            self.__win.draw_line(l,"black")
+            cl = "black"
+        self.__win.draw_line(l,cl)
     
     def draw_move(self, to_cell: 'Cell', undo = False):
         self_center = Point((self.__x2-self.__x1)//2+self.__x1,(self.__y2-self.__y1)//2+self.__y1)
@@ -82,6 +100,7 @@ class Cell():
         if undo:
             color = "grey"
 
-        if self.__win is not None:
-            self.__win.draw_line(Line(self_center,c_center),color)
+        if self.__win is None:
+            return
+        self.__win.draw_line(Line(self_center,c_center),color)
 
